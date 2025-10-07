@@ -1,6 +1,26 @@
 import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
 import "./style.css";
 
+// Simple counter for demonstration
+let counter: number = 0;
+
+// Create basic HTML structure
 document.body.innerHTML = `
-  <p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
+  <h1>CMPM 121 Incremental Game</h1>
+  <p>Counter: <span id="counter">${counter}</span></p>
+  <button id="increment">Click Me!</button>
+
+  // Image example from base code
+  <h2>Example image asset: <img src="${exampleIconUrl}" class="icon" /></h2>
 `;
+
+// Add click handler
+const button = document.getElementById("increment")!;
+const counterElement = document.getElementById("counter")!;
+
+button.addEventListener("click", () => {
+  // This looks like to a good place to add some logic!
+  counter += 1;
+  counterElement.textContent = counter.toString();
+  console.log("I have these thingies:", button, counterElement, counter);
+});
