@@ -8,10 +8,7 @@ let counter: number = 0;
 document.body.innerHTML = `
   <h1>CMPM 121 Incremental Game</h1>
   <p>Counter: <span id="counter">${counter}</span></p>
-  <button id="increment">Click Me!</button>
-
-  // Image example from base code
-  <h2>Example image asset: <img src="${exampleIconUrl}" class="icon" /></h2>
+  <button id="increment"><img src="${exampleIconUrl}" class="icon" /></button>
 `;
 
 // Add click handler
