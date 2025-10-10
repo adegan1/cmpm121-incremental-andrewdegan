@@ -1,3 +1,6 @@
+const MAX_FPS = 60;
+const FRAME_INTERVAL = 1000 / MAX_FPS; // Approximately 16.67ms per frame
+
 import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
 import "./style.css";
 
@@ -22,7 +25,6 @@ function incrementBank(value: number) {
 // When the player clicks the main button
 button.addEventListener("click", () => {
   incrementBank(1);
-  console.log("I have these thingies:", button, counterElement, bank);
 });
 
 // Testing set interval
@@ -30,8 +32,21 @@ setInterval(() => {
   incrementBank(1);
 }, 1000);
 
-// Update the counter display every frame
+// Update the counter display every frame (max 60fps)
+let previousTime = 0;
+
 function update() {
+  // Calculate time since last frame
+  const deltaTime = performance.now() - previousTime;
+
+  // Maintain 60fps maximum
+  if (deltaTime < FRAME_INTERVAL) {
+    requestAnimationFrame(update);
+    return; // Skip this frame to maintain max FPS
+  }
+  previousTime = performance.now();
+
+  // Update the counter display
   counterElement.innerText = bank.toString();
   requestAnimationFrame(update);
 }
