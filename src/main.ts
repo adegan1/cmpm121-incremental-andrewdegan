@@ -17,7 +17,6 @@ const counterElement = document.getElementById("counter")!;
 
 function incrementBank(value: number) {
   bank += value;
-  counterElement.textContent = bank.toString();
 }
 
 // When the player clicks the main button
@@ -30,5 +29,12 @@ button.addEventListener("click", () => {
 setInterval(() => {
   incrementBank(1);
 }, 1000);
+
+// Update the counter display every frame
+function update() {
+  counterElement.innerText = bank.toString();
+  requestAnimationFrame(update);
+}
+update();
 
 // Make sure there is a blank line at the end of the file for committing
