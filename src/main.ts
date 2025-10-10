@@ -26,4 +26,9 @@ button.addEventListener("click", () => {
   console.log("I have these thingies:", button, counterElement, bank);
 });
 
+// Testing set interval
+setInterval(() => {
+  incrementBank(1);
+}, 1000);
+
 // Make sure there is a blank line at the end of the file for committing
