@@ -1,13 +1,13 @@
 import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
 import "./style.css";
 
-// Simple counter for demonstration
-let counter: number = 0;
+// Simple counter
+let bank: number = 0;
 
 // Create basic HTML structure
 document.body.innerHTML = `
   <h1>CMPM 121 Incremental Game</h1>
-  <p>Counter: <span id="counter">${counter}</span></p>
+  <p>Counter: <span id="counter">${bank}</span></p>
   <button id="increment"><img src="${exampleIconUrl}" class="icon" /></button>
 `;
 
@@ -15,9 +15,15 @@ document.body.innerHTML = `
 const button = document.getElementById("increment")!;
 const counterElement = document.getElementById("counter")!;
 
+function incrementBank(value: number) {
+  bank += value;
+  counterElement.textContent = bank.toString();
+}
+
+// When the player clicks the main button
 button.addEventListener("click", () => {
-  // This looks like to a good place to add some logic!
-  counter += 1;
-  counterElement.textContent = counter.toString();
-  console.log("I have these thingies:", button, counterElement, counter);
+  incrementBank(1);
+  console.log("I have these thingies:", button, counterElement, bank);
 });
+
+// Make sure there is a blank line at the end of the file for committing
