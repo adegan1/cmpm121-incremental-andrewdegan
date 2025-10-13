@@ -2,14 +2,16 @@ const MAX_FPS = 60;
 const FRAME_INTERVAL = 1000 / MAX_FPS; // Approximately 16.67ms per frame
 
 // Import assets
-import upgrade2Img from "./img/embryo.png";
-import upgrade1Img from "./img/frogspawn.png";
-import mainButtonImg from "./img/mainfrog.png";
-import upgrade3Img from "./img/tadpole.png";
-//import upgrade4Img from "./img/froglet.png";
-//import upgrade5Img from "./img/kingfrog.png";
 import frogSound from "./audio/frogsfx.wav";
 import upgradeSound from "./audio/upgradesfx.wav";
+
+import upgrade2Img from "./img/embryo.png";
+import upgrade4Img from "./img/froglet.png";
+import upgrade1Img from "./img/frogspawn.png";
+import upgrade5Img from "./img/kingfrog.png";
+import upgrade3Img from "./img/tadpole.png";
+
+import mainButtonImg from "./img/mainfrog.png";
 import "./style.css";
 
 // Initialize upgrade
@@ -18,12 +20,45 @@ interface Upgrade {
   cost: number;
   rate: number;
   count: number;
+  desc: string;
 }
 
 const availableUpgrades: Upgrade[] = [
-  { name: "Frogspawn", cost: 10, rate: 0.1, count: 0 },
-  { name: "Embryo", cost: 100, rate: 2, count: 0 },
-  { name: "Tadpole", cost: 1000, rate: 50, count: 0 },
+  {
+    name: "Frogspawn",
+    cost: 10,
+    rate: 0.1,
+    count: 0,
+    desc: "The beginning of a frog's life cycle.",
+  },
+  {
+    name: "Embryo",
+    cost: 100,
+    rate: 2,
+    count: 0,
+    desc: "A developing frog ready to hatch.",
+  },
+  {
+    name: "Tadpole",
+    cost: 1000,
+    rate: 50,
+    count: 0,
+    desc: "A young frog that is starting to grow legs.",
+  },
+  {
+    name: "Froglet",
+    cost: 10000,
+    rate: 200,
+    count: 0,
+    desc: "A frog that is almost fully developed.",
+  },
+  {
+    name: "King Frog",
+    cost: 100000,
+    rate: 1000,
+    count: 0,
+    desc: "The ultimate form of a frog.",
+  },
 ];
 
 // Set variables
@@ -49,10 +84,6 @@ document.body.innerHTML = `
 
   <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
 
-  <div class="upgradetextcontainer">
-    <div class="subtitle"><h3>Upgrades</h3></div>
-  </div>
-
   <div class="upgradecontainer">
   <button id="upgrade1" class = "upgradebutton">Frogspawn<br><img src="${upgrade1Img}" class="upgradeicon" /><br>
     <span id="upgrade1Info">(Cost: ${availableUpgrades[0].cost})<br>
@@ -74,6 +105,24 @@ document.body.innerHTML = `
     <span id="upgradeCount3">Owned: ${
   availableUpgrades[2].count
 }</span></button>
+
+  <button id="upgrade4" class = "upgradebutton">Froglet<br><img src="${upgrade4Img}" class="upgradeicon" /><br>
+    <span id="upgrade4Info">(Cost: ${availableUpgrades[3].cost})<br>
+    (+ ${availableUpgrades[3].rate} CpS)</span><br><br>
+    <span id="upgradeCount4">Owned: ${
+  availableUpgrades[3].count
+}</span></button>
+
+  <button id="upgrade5" class = "upgradebutton">King Frog<br><img src="${upgrade5Img}" class="upgradeicon" /><br>
+      <span id="upgrade5Info">(Cost: ${availableUpgrades[4].cost})<br>
+      (+ ${availableUpgrades[4].rate} CpS)</span><br><br>
+      <span id="upgradeCount5">Owned: ${
+  availableUpgrades[4].count
+}</span></button>
+  </div>
+
+  <div class="descriptioncontainer">
+    <div class="counter"><span id="descElement"><p>...</p></span></div>
   </div>
 `;
 
@@ -81,6 +130,7 @@ document.body.innerHTML = `
 const mainButton = document.getElementById("mainbutton")!;
 const autoClickValueElement = document.getElementById("autoclickvalue")!;
 const counterElement = document.getElementById("counter")!;
+const descElement = document.getElementById("descElement")!;
 
 // Function to increment bank
 function incrementBank(value: number) {
@@ -113,6 +163,19 @@ availableUpgrades.forEach((upgrade, index) => {
       upgradeSoundInstance.play();
       info.innerText = `(Cost: ${upgrade.cost})\n(+ ${upgrade.rate} CpS)`;
     }
+  });
+});
+
+// Show description on hover
+availableUpgrades.forEach((upgrade, index) => {
+  const button = document.getElementById(`upgrade${index + 1}`)!;
+
+  button.addEventListener("mouseenter", () => {
+    descElement.innerText = upgrade.desc;
+  });
+
+  button.addEventListener("mouseleave", () => {
+    descElement.innerText = "...";
   });
 });
 
