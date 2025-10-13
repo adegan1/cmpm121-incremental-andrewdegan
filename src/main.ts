@@ -6,12 +6,12 @@ import "./style.css";
 
 // Set variables
 let bank: number = 0;
-let clickValue = 1;
+const clickValue = 1;
 let autoClickValue: number = 0;
 
-let upgrade1Cost = 10;
-let upgrade2Cost = 100;
-let upgrade3Cost = 1000;
+const upgrade1Cost = 10;
+const upgrade2Cost = 100;
+const upgrade3Cost = 1000;
 
 let upgrade1Count = 0;
 let upgrade2Count = 0;
@@ -29,15 +29,23 @@ document.body.innerHTML = `
 
   <button id="mainbutton"><img src="${mainButtonImg}" class="icon" /></button>
 
-  <button id="upgrade1">Upgrade 1 (Cost: ${upgrade1Cost})</button>
-  <button id="upgrade2">Upgrade 2 (Cost: ${upgrade2Cost})</button>
-  <button id="upgrade3">Upgrade 3 (Cost: ${upgrade3Cost})</button>
+  <button id="upgrade1">Upgrade 1 (Cost: ${upgrade1Cost})<br>(+ ${upgrade1Value} items per second)</button>
+  <button id="upgrade2">Upgrade 2 (Cost: ${upgrade2Cost})<br>(+ ${upgrade2Value} items per second)</button>
+  <button id="upgrade3">Upgrade 3 (Cost: ${upgrade3Cost})<br>(+ ${upgrade3Value} items per second)</button>
+
+  <p>Upgrade 1: <span id="upgradeCount1">${upgrade1Count}</span></p>
+  <p>Upgrade 2: <span id="upgradeCount2">${upgrade2Count}</span></p>
+  <p>Upgrade 3: <span id="upgradeCount3">${upgrade3Count}</span></p>
 `;
 
-// Add click handler
+// Get HTML elements
 const mainButton = document.getElementById("mainbutton")!;
 const autoClickValueElement = document.getElementById("autoclickvalue")!;
 const counterElement = document.getElementById("counter")!;
+
+const upgrade1CountElement = document.getElementById("upgradeCount1")!;
+const upgrade2CountElement = document.getElementById("upgradeCount2")!;
+const upgrade3CountElement = document.getElementById("upgradeCount3")!;
 
 function incrementBank(value: number) {
   bank += value;
@@ -63,7 +71,8 @@ upgrade1Button.addEventListener("click", () => {
     bank -= upgrade1Cost;
     autoClickValue += upgrade1Value;
     upgrade1Count++;
-    upgrade1Button.innerText = `Upgrade 1 (Cost: ${upgrade1Cost})`;
+    upgrade1Button.innerText =
+      `Upgrade 1 (Cost: ${upgrade1Cost})\n(+ ${upgrade1Value} items per second)`;
   }
 });
 
@@ -72,7 +81,8 @@ upgrade2Button.addEventListener("click", () => {
     bank -= upgrade2Cost;
     autoClickValue += upgrade2Value;
     upgrade2Count++;
-    upgrade2Button.innerText = `Upgrade 2 (Cost: ${upgrade2Cost})`;
+    upgrade2Button.innerText =
+      `Upgrade 2 (Cost: ${upgrade2Cost})\n(+ ${upgrade2Value} items per second)`;
   }
 });
 
@@ -81,7 +91,8 @@ upgrade3Button.addEventListener("click", () => {
     bank -= upgrade3Cost;
     autoClickValue += upgrade3Value;
     upgrade3Count++;
-    upgrade3Button.innerText = `Upgrade 3 (Cost: ${upgrade3Cost})`;
+    upgrade3Button.innerText =
+      `Upgrade 3 (Cost: ${upgrade3Cost})\n(+ ${upgrade3Value} items per second)`;
   }
 });
 
@@ -130,6 +141,11 @@ function update() {
 
   autoClickValueElement.innerText = autoClickValue.toString();
   counterElement.innerText = bank.toString();
+
+  upgrade1CountElement.innerText = upgrade1Count.toString();
+  upgrade2CountElement.innerText = upgrade2Count.toString();
+  upgrade3CountElement.innerText = upgrade3Count.toString();
+
   requestAnimationFrame(update);
 }
 
