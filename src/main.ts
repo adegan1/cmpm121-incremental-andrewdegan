@@ -1,7 +1,12 @@
 const MAX_FPS = 60;
 const FRAME_INTERVAL = 1000 / MAX_FPS; // Approximately 16.67ms per frame
 
-import mainButtonImg from "./noun-paperclip-7598668-00449F.png";
+import upgrade2Img from "./img/embryo.png";
+import upgrade1Img from "./img/frogspawn.png";
+import mainButtonImg from "./img/mainfrog.png";
+import upgrade3Img from "./img/tadpole.png";
+//import upgrade4Img from "./img/froglet.png";
+//import upgrade5Img from "./img/kingfrog.png";
 import "./style.css";
 
 // Set variables
@@ -9,6 +14,8 @@ let bank: number = 0;
 const clickValue = 1;
 let autoClickValue: number = 0;
 
+// Upgrade variables
+// 5 upgrades: Frogspawn, Embryo, Tadpole, Froglet, Frog King
 let upgrade1Cost = 10;
 let upgrade2Cost = 100;
 let upgrade3Cost = 1000;
@@ -23,15 +30,15 @@ const upgrade3Value = 50.0;
 
 // Create basic HTML structure
 document.body.innerHTML = `
-  <h1>CMPM 121 Incremental Game</h1>
-  <p><span id="autoclickvalue">${autoClickValue}</span> items per second</p>
-  <p>Counter: <span id="counter">${bank}</span></p>
+  <h1>Frog Frenzy</h1>
+  <p><span id="autoclickvalue">${autoClickValue}</span> Croaks per Second</p>
+  <p>Croaks: <span id="counter">${bank}</span></p>
 
   <button id="mainbutton"><img src="${mainButtonImg}" class="icon" /></button>
 
-  <button id="upgrade1">Upgrade 1 (Cost: ${upgrade1Cost})<br>(+ ${upgrade1Value} items per second)</button>
-  <button id="upgrade2">Upgrade 2 (Cost: ${upgrade2Cost})<br>(+ ${upgrade2Value} items per second)</button>
-  <button id="upgrade3">Upgrade 3 (Cost: ${upgrade3Cost})<br>(+ ${upgrade3Value} items per second)</button>
+  <button id="upgrade1"><img src="${upgrade1Img}" class="icon" /><br><span id="upgrade1Info">(Cost: ${upgrade1Cost})<br>(+ ${upgrade1Value} CpS)</span></button>
+  <button id="upgrade2"><img src="${upgrade2Img}" class="icon" /><br><span id="upgrade2Info">(Cost: ${upgrade2Cost})<br>(+ ${upgrade2Value} CpS)</span></button>
+  <button id="upgrade3"><img src="${upgrade3Img}" class="icon" /><br><span id="upgrade3Info">(Cost: ${upgrade3Cost})<br>(+ ${upgrade3Value} CpS)</span></button>
 
   <p>Upgrade 1: <span id="upgradeCount1">${upgrade1Count}</span></p>
   <p>Upgrade 2: <span id="upgradeCount2">${upgrade2Count}</span></p>
@@ -63,8 +70,11 @@ setInterval(() => {
 
 // Upgrade button logic
 const upgrade1Button = document.getElementById("upgrade1")!;
+const upgrade1Info = document.getElementById("upgrade1Info")!;
 const upgrade2Button = document.getElementById("upgrade2")!;
+const upgrade2Info = document.getElementById("upgrade2Info")!;
 const upgrade3Button = document.getElementById("upgrade3")!;
+const upgrade3Info = document.getElementById("upgrade3Info")!;
 
 upgrade1Button.addEventListener("click", () => {
   if (bank >= upgrade1Cost) {
@@ -72,8 +82,8 @@ upgrade1Button.addEventListener("click", () => {
     autoClickValue += upgrade1Value;
     upgrade1Count++;
     upgrade1Cost = Math.floor(upgrade1Cost * 1.15); // Increase cost by 15%
-    upgrade1Button.innerText =
-      `Upgrade 1 (Cost: ${upgrade1Cost})\n(+ ${upgrade1Value} items per second)`;
+    upgrade1Info.innerText =
+      `(Cost: ${upgrade1Cost})\n(+ ${upgrade1Value} CpS)`;
   }
 });
 
@@ -83,8 +93,8 @@ upgrade2Button.addEventListener("click", () => {
     autoClickValue += upgrade2Value;
     upgrade2Count++;
     upgrade2Cost = Math.floor(upgrade2Cost * 1.15); // Increase cost by 15%
-    upgrade2Button.innerText =
-      `Upgrade 2 (Cost: ${upgrade2Cost})\n(+ ${upgrade2Value} items per second)`;
+    upgrade2Info.innerText =
+      `(Cost: ${upgrade2Cost})\n(+ ${upgrade2Value} CpS)`;
   }
 });
 
@@ -94,8 +104,8 @@ upgrade3Button.addEventListener("click", () => {
     autoClickValue += upgrade3Value;
     upgrade3Count++;
     upgrade3Cost = Math.floor(upgrade3Cost * 1.15); // Increase cost by 15%
-    upgrade3Button.innerText =
-      `Upgrade 3 (Cost: ${upgrade3Cost})\n(+ ${upgrade3Value} items per second)`;
+    upgrade3Info.innerText =
+      `(Cost: ${upgrade3Cost})\n(+ ${upgrade3Value} CpS)`;
   }
 });
 
