@@ -9,9 +9,9 @@ let bank: number = 0;
 const clickValue = 1;
 let autoClickValue: number = 0;
 
-const upgrade1Cost = 10;
-const upgrade2Cost = 100;
-const upgrade3Cost = 1000;
+let upgrade1Cost = 10;
+let upgrade2Cost = 100;
+let upgrade3Cost = 1000;
 
 let upgrade1Count = 0;
 let upgrade2Count = 0;
@@ -71,6 +71,7 @@ upgrade1Button.addEventListener("click", () => {
     bank -= upgrade1Cost;
     autoClickValue += upgrade1Value;
     upgrade1Count++;
+    upgrade1Cost = Math.floor(upgrade1Cost * 1.15); // Increase cost by 15%
     upgrade1Button.innerText =
       `Upgrade 1 (Cost: ${upgrade1Cost})\n(+ ${upgrade1Value} items per second)`;
   }
@@ -81,6 +82,7 @@ upgrade2Button.addEventListener("click", () => {
     bank -= upgrade2Cost;
     autoClickValue += upgrade2Value;
     upgrade2Count++;
+    upgrade2Cost = Math.floor(upgrade2Cost * 1.15); // Increase cost by 15%
     upgrade2Button.innerText =
       `Upgrade 2 (Cost: ${upgrade2Cost})\n(+ ${upgrade2Value} items per second)`;
   }
@@ -91,6 +93,7 @@ upgrade3Button.addEventListener("click", () => {
     bank -= upgrade3Cost;
     autoClickValue += upgrade3Value;
     upgrade3Count++;
+    upgrade3Cost = Math.floor(upgrade3Cost * 1.15); // Increase cost by 15%
     upgrade3Button.innerText =
       `Upgrade 3 (Cost: ${upgrade3Cost})\n(+ ${upgrade3Value} items per second)`;
   }
