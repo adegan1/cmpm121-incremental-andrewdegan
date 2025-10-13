@@ -7,12 +7,19 @@ import mainButtonImg from "./img/mainfrog.png";
 import upgrade3Img from "./img/tadpole.png";
 //import upgrade4Img from "./img/froglet.png";
 //import upgrade5Img from "./img/kingfrog.png";
+import frogSound from "./audio/frogsfx.wav";
+import upgradeSound from "./audio/upgradesfx.wav";
 import "./style.css";
 
 // Set variables
 let bank: number = 0;
 const clickValue = 1;
 let autoClickValue: number = 0;
+
+const frogSoundInstance = new Audio(frogSound);
+frogSoundInstance.volume = 0.3;
+const upgradeSoundInstance = new Audio(upgradeSound);
+upgradeSoundInstance.volume = 0.25;
 
 // Upgrade variables
 // 5 upgrades: Frogspawn, Embryo, Tadpole, Froglet, Frog King
@@ -30,19 +37,37 @@ const upgrade3Value = 50.0;
 
 // Create basic HTML structure
 document.body.innerHTML = `
-  <h1>Frog Frenzy</h1>
-  <p><span id="autoclickvalue">${autoClickValue}</span> Croaks per Second</p>
-  <p>Croaks: <span id="counter">${bank}</span></p>
+  <div class="titlecontainer">
+  <div class = "title"><h1>Frog Frenzy</h1></div>
+  <div class = "subtitle"><h3>Click the frog to earn Croaks!</h3></div>
+  </div>
+  <div class="countcontainer">
+  <div class = "counter"><p><span id="autoclickvalue">${autoClickValue}</span> Croaks per Second</p></div>
+  <div class = "subtitle"><h2>Croaks: <span id="counter">${bank}</span></h2></div>
+  </div>
 
-  <button id="mainbutton"><img src="${mainButtonImg}" class="icon" /></button>
+  <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
 
-  <button id="upgrade1"><img src="${upgrade1Img}" class="icon" /><br><span id="upgrade1Info">(Cost: ${upgrade1Cost})<br>(+ ${upgrade1Value} CpS)</span></button>
-  <button id="upgrade2"><img src="${upgrade2Img}" class="icon" /><br><span id="upgrade2Info">(Cost: ${upgrade2Cost})<br>(+ ${upgrade2Value} CpS)</span></button>
-  <button id="upgrade3"><img src="${upgrade3Img}" class="icon" /><br><span id="upgrade3Info">(Cost: ${upgrade3Cost})<br>(+ ${upgrade3Value} CpS)</span></button>
+  <div class="upgradetextcontainer">
+    <div class="subtitle"><h3>Upgrades</h3></div>
+  </div>
 
-  <p>Upgrade 1: <span id="upgradeCount1">${upgrade1Count}</span></p>
-  <p>Upgrade 2: <span id="upgradeCount2">${upgrade2Count}</span></p>
-  <p>Upgrade 3: <span id="upgradeCount3">${upgrade3Count}</span></p>
+  <div class="upgradecontainer">
+  <button id="upgrade1" class = "upgradebutton">Frogspawn<br><img src="${upgrade1Img}" class="upgradeicon" /><br>
+    <span id="upgrade1Info">(Cost: ${upgrade1Cost})<br>
+    (+ ${upgrade1Value} CpS)</span><br><br>
+    <span id="upgradeCount1">Owned: ${upgrade1Count}</span></button>
+
+  <button id="upgrade2" class = "upgradebutton">Embryo<br><img src="${upgrade2Img}" class="upgradeicon" /><br>
+    <span id="upgrade2Info">(Cost: ${upgrade2Cost})<br>
+    (+ ${upgrade2Value} CpS)</span><br><br>
+    <span id="upgradeCount2">Owned: ${upgrade2Count}</span></button>
+
+  <button id="upgrade3" class = "upgradebutton">Tadpole<br><img src="${upgrade3Img}" class="upgradeicon" /><br>
+    <span id="upgrade3Info">(Cost: ${upgrade3Cost})<br>
+    (+ ${upgrade3Value} CpS)</span><br><br>
+    <span id="upgradeCount3">Owned: ${upgrade3Count}</span></button>
+  </div>
 `;
 
 // Get HTML elements
@@ -60,6 +85,7 @@ function incrementBank(value: number) {
 
 // When the player clicks the main button
 mainButton.addEventListener("click", () => {
+  frogSoundInstance.play();
   incrementBank(clickValue);
 });
 
@@ -81,7 +107,8 @@ upgrade1Button.addEventListener("click", () => {
     bank -= upgrade1Cost;
     autoClickValue += upgrade1Value;
     upgrade1Count++;
-    upgrade1Cost = Math.floor(upgrade1Cost * 1.15); // Increase cost by 15%
+    upgrade1Cost = +(upgrade1Cost * 1.15).toFixed(1); // Increase cost by 15%
+    upgradeSoundInstance.play();
     upgrade1Info.innerText =
       `(Cost: ${upgrade1Cost})\n(+ ${upgrade1Value} CpS)`;
   }
@@ -92,7 +119,8 @@ upgrade2Button.addEventListener("click", () => {
     bank -= upgrade2Cost;
     autoClickValue += upgrade2Value;
     upgrade2Count++;
-    upgrade2Cost = Math.floor(upgrade2Cost * 1.15); // Increase cost by 15%
+    upgrade2Cost = +(upgrade2Cost * 1.15).toFixed(1); // Increase cost by 15%
+    upgradeSoundInstance.play();
     upgrade2Info.innerText =
       `(Cost: ${upgrade2Cost})\n(+ ${upgrade2Value} CpS)`;
   }
@@ -103,7 +131,8 @@ upgrade3Button.addEventListener("click", () => {
     bank -= upgrade3Cost;
     autoClickValue += upgrade3Value;
     upgrade3Count++;
-    upgrade3Cost = Math.floor(upgrade3Cost * 1.15); // Increase cost by 15%
+    upgrade3Cost = +(upgrade3Cost * 1.15).toFixed(1); // Increase cost by 15%
+    upgradeSoundInstance.play();
     upgrade3Info.innerText =
       `(Cost: ${upgrade3Cost})\n(+ ${upgrade3Value} CpS)`;
   }
@@ -155,9 +184,9 @@ function update() {
   autoClickValueElement.innerText = autoClickValue.toString();
   counterElement.innerText = bank.toString();
 
-  upgrade1CountElement.innerText = upgrade1Count.toString();
-  upgrade2CountElement.innerText = upgrade2Count.toString();
-  upgrade3CountElement.innerText = upgrade3Count.toString();
+  upgrade1CountElement.innerText = "Owned: " + upgrade1Count.toString();
+  upgrade2CountElement.innerText = "Owned: " + upgrade2Count.toString();
+  upgrade3CountElement.innerText = "Owned: " + upgrade3Count.toString();
 
   requestAnimationFrame(update);
 }
