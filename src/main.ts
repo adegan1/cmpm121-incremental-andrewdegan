@@ -6,18 +6,37 @@ import "./style.css";
 
 // Set variables
 let bank: number = 0;
+let clickValue = 1;
 let autoClickValue: number = 0;
+
+let upgrade1Cost = 10;
+let upgrade2Cost = 100;
+let upgrade3Cost = 1000;
+
+let upgrade1Count = 0;
+let upgrade2Count = 0;
+let upgrade3Count = 0;
+
+const upgrade1Value = 0.1;
+const upgrade2Value = 2.0;
+const upgrade3Value = 50.0;
 
 // Create basic HTML structure
 document.body.innerHTML = `
   <h1>CMPM 121 Incremental Game</h1>
+  <p><span id="autoclickvalue">${autoClickValue}</span> items per second</p>
   <p>Counter: <span id="counter">${bank}</span></p>
+
   <button id="mainbutton"><img src="${mainButtonImg}" class="icon" /></button>
-  <button id="upgrade1"><img src="${"Upgrade 1"}" class="icon" /></button>
+
+  <button id="upgrade1">Upgrade 1 (Cost: ${upgrade1Cost})</button>
+  <button id="upgrade2">Upgrade 2 (Cost: ${upgrade2Cost})</button>
+  <button id="upgrade3">Upgrade 3 (Cost: ${upgrade3Cost})</button>
 `;
 
 // Add click handler
-const button = document.getElementById("mainbutton")!;
+const mainButton = document.getElementById("mainbutton")!;
+const autoClickValueElement = document.getElementById("autoclickvalue")!;
 const counterElement = document.getElementById("counter")!;
 
 function incrementBank(value: number) {
@@ -25,8 +44,8 @@ function incrementBank(value: number) {
 }
 
 // When the player clicks the main button
-button.addEventListener("click", () => {
-  incrementBank(1);
+mainButton.addEventListener("click", () => {
+  incrementBank(clickValue);
 });
 
 // Add funds produced by upgrades every second
@@ -36,30 +55,59 @@ setInterval(() => {
 
 // Upgrade button logic
 const upgrade1Button = document.getElementById("upgrade1")!;
-let upgrade1Cost = 10;
+const upgrade2Button = document.getElementById("upgrade2")!;
+const upgrade3Button = document.getElementById("upgrade3")!;
 
 upgrade1Button.addEventListener("click", () => {
   if (bank >= upgrade1Cost) {
     bank -= upgrade1Cost;
-    autoClickValue += 1;
-    upgrade1Cost = Math.floor(upgrade1Cost * 1.2); // Increase cost by 20%
+    autoClickValue += upgrade1Value;
+    upgrade1Count++;
     upgrade1Button.innerText = `Upgrade 1 (Cost: ${upgrade1Cost})`;
   }
 });
 
-// Initialize upgrade button text
-upgrade1Button.innerText = `Upgrade 1 (Cost: ${upgrade1Cost})`;
+upgrade2Button.addEventListener("click", () => {
+  if (bank >= upgrade2Cost) {
+    bank -= upgrade2Cost;
+    autoClickValue += upgrade2Value;
+    upgrade2Count++;
+    upgrade2Button.innerText = `Upgrade 2 (Cost: ${upgrade2Cost})`;
+  }
+});
 
-// Update the counter display every frame (max 60fps)
-let previousTime = 0;
+upgrade3Button.addEventListener("click", () => {
+  if (bank >= upgrade3Cost) {
+    bank -= upgrade3Cost;
+    autoClickValue += upgrade3Value;
+    upgrade3Count++;
+    upgrade3Button.innerText = `Upgrade 3 (Cost: ${upgrade3Cost})`;
+  }
+});
 
+// Enable or disable upgrade buttons based on bank amount
 function disableButtonCheck() {
   if (bank >= upgrade1Cost) {
     upgrade1Button.removeAttribute("disabled");
   } else {
     upgrade1Button.setAttribute("disabled", "true");
   }
+
+  if (bank >= upgrade2Cost) {
+    upgrade2Button.removeAttribute("disabled");
+  } else {
+    upgrade2Button.setAttribute("disabled", "true");
+  }
+
+  if (bank >= upgrade3Cost) {
+    upgrade3Button.removeAttribute("disabled");
+  } else {
+    upgrade3Button.setAttribute("disabled", "true");
+  }
 }
+
+// Update the counter display every frame (max 60fps)
+let previousTime = 0;
 
 function update() {
   // Calculate time since last frame
@@ -76,9 +124,15 @@ function update() {
   disableButtonCheck();
 
   // Update the counter display
+  // Make sure values are fixed
+  autoClickValue = +autoClickValue.toFixed(1);
+  bank = +bank.toFixed(1);
+
+  autoClickValueElement.innerText = autoClickValue.toString();
   counterElement.innerText = bank.toString();
   requestAnimationFrame(update);
 }
+
 update();
 
 // Make sure there is a blank line at the end of the file for committing
