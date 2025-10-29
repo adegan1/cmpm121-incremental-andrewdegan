@@ -19,6 +19,15 @@ import tadpoleImg from "./img/tadpole.png";
 import mainButtonImg from "./img/mainfrog.png";
 import "./style.css";
 
+// Map of upgrade images
+const UPGRADE_IMAGES: Record<string, string> = {
+  "Frogspawn": frogspawnImg,
+  "Embryo": embryoImg,
+  "Tadpole": tadpoleImg,
+  "Froglet": frogletImg,
+  "King Frog": kingfrogImg,
+};
+
 // ====================================
 //  UPGRADE DATA
 // ====================================
@@ -69,9 +78,9 @@ const availableUpgrades: Upgrade[] = [
 ];
 
 // Set variables
-let bank: number = 0;
+let croaks: number = 0;
 const clickValue = 1;
-let autoClickValue: number = 0;
+let croaksPerSecond: number = 0;
 
 const frogSoundInstance = new Audio(frogSound);
 frogSoundInstance.volume = 0.3;
@@ -87,8 +96,8 @@ document.body.innerHTML = `
   <div class = "subtitle"><h3>Click the frog to earn Croaks!</h3></div>
   </div>
   <div class="countcontainer">
-  <div class = "counter"><p><span id="autoclickvalue">${autoClickValue}</span> Croaks per Second</p></div>
-  <div class = "subtitle"><h2>Croaks: <span id="counter">${bank}</span></h2></div>
+  <div class = "counter"><p><span id="croaksPerSecond">${croaksPerSecond}</span> Croaks per Second</p></div>
+  <div class = "subtitle"><h2>Croaks: <span id="counter">${croaks}</span></h2></div>
   </div>
 
   <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
@@ -104,7 +113,7 @@ document.body.innerHTML = `
 //  DOM ELEMENTS
 // ====================================
 const mainButton = document.getElementById("mainbutton")!;
-const autoClickValueElement = document.getElementById("autoclickvalue")!;
+const croaksPerSecondElement = document.getElementById("croaksPerSecond")!;
 const counterElement = document.getElementById("counter")!;
 const descElement = document.getElementById("descElement")!;
 
@@ -119,7 +128,7 @@ availableUpgrades.forEach((upgrade) => {
   button.className = "upgradebutton";
   button.innerHTML = `
     ${upgrade.name}<br>
-    <img src="${getUpgradeImage(upgrade.name)}" class="upgradeicon" /><br>
+    <img src="${UPGRADE_IMAGES[upgrade.name]}" class="upgradeicon" /><br>
     <span id="${button.id}-info">(Cost: ${upgrade.cost})<br>(+${upgrade.rate} CpS)</span><br><br>
     <span id="${button.id}-count">Owned: ${upgrade.count}</span>
   `;
@@ -127,9 +136,9 @@ availableUpgrades.forEach((upgrade) => {
 
   // Add button event listeners
   button.addEventListener("click", () => {
-    if (bank >= upgrade.cost) {
-      bank -= upgrade.cost;
-      autoClickValue += upgrade.rate;
+    if (croaks >= upgrade.cost) {
+      croaks -= upgrade.cost;
+      croaksPerSecond += upgrade.rate;
       upgrade.count++;
       upgrade.cost = +(upgrade.cost * 1.15).toFixed(1); // Increase cost by 15%
 
@@ -154,29 +163,13 @@ availableUpgrades.forEach((upgrade) => {
   });
 });
 
-function getUpgradeImage(name: string): string {
-  switch (name) {
-    case "Frogspawn":
-      return frogspawnImg;
-    case "Embryo":
-      return embryoImg;
-    case "Tadpole":
-      return tadpoleImg;
-    case "Froglet":
-      return frogletImg;
-    case "King Frog":
-      return kingfrogImg;
-  }
-  return "";
-}
-
-// Enable or disable upgrade buttons based on bank amount
+// Enable or disable upgrade buttons based on croaks amount
 function disableButtonCheck() {
   availableUpgrades.forEach((upgrade) => {
     const button = document.getElementById(
       `upgrade-${upgrade.name.toLowerCase().replace(/\s+/g, "-")}`,
     )!;
-    if (bank >= upgrade.cost) {
+    if (croaks >= upgrade.cost) {
       button.removeAttribute("disabled");
     } else {
       button.setAttribute("disabled", "true");
@@ -187,8 +180,8 @@ function disableButtonCheck() {
 // ====================================
 //  GAME LOGIC
 // ====================================
-function incrementBank(value: number) {
-  bank += value;
+function incrementCroaks(value: number) {
+  croaks += value;
 }
 
 // ====================================
@@ -196,12 +189,12 @@ function incrementBank(value: number) {
 // ====================================
 mainButton.addEventListener("click", () => {
   frogSoundInstance.play();
-  incrementBank(clickValue);
+  incrementCroaks(clickValue);
 });
 
 // Add funds produced by upgrades every second
 setInterval(() => {
-  incrementBank(autoClickValue);
+  incrementCroaks(croaksPerSecond);
 }, 1000);
 
 // ====================================
@@ -221,16 +214,16 @@ function update() {
   }
   previousTime = performance.now();
 
-  // Enable/disable upgrade buttons based on bank amount
+  // Enable/disable upgrade buttons based on croak amount
   disableButtonCheck();
 
   // Update the counter display
   // Make sure values are fixed
-  autoClickValue = +autoClickValue.toFixed(1);
-  bank = +bank.toFixed(1);
+  croaksPerSecond = +croaksPerSecond.toFixed(1);
+  croaks = +croaks.toFixed(1);
 
-  autoClickValueElement.innerText = autoClickValue.toString();
-  counterElement.innerText = bank.toString();
+  croaksPerSecondElement.innerText = croaksPerSecond.toString();
+  counterElement.innerText = croaks.toString();
 
   // Request the next frame
   requestAnimationFrame(update);
