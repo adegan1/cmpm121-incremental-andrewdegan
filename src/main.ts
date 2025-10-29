@@ -105,11 +105,7 @@ document.body.innerHTML = `
     </div>
   </div>
 
-  <div class="upgrades" id="upgrade-container">
-    <div class="descriptioncontainer">
-      <div class="counter"><span id="descElement"><p>...</p></span></div>
-    </div>
-  </div>
+  <div class="upgrades" id="upgrade-container"></div>
 `;
 
 // ====================================
@@ -118,13 +114,34 @@ document.body.innerHTML = `
 const mainButton = document.getElementById("mainbutton")!;
 const croaksPerSecondElement = document.getElementById("croaksPerSecond")!;
 const counterElement = document.getElementById("counter")!;
-const descElement = document.getElementById("descElement")!;
 
 // ====================================
 //  UPGRADE BUTTONS
 // ====================================
 const container = document.getElementById("upgrade-container")!;
 
+// Add a "sticky" header to the upgrade container
+const title = document.createElement("div");
+title.id = "upgrades-title";
+title.textContent = "Upgrades";
+title.style.textAlign = "center";
+title.style.fontWeight = "bold";
+title.style.fontSize = "1.2em";
+title.style.margin = "10px 0";
+title.style.color = "#2d6d2d";
+
+const descContainer = document.createElement("div");
+descContainer.id = "desc-container";
+descContainer.style.textAlign = "center";
+descContainer.style.fontSize = "0.9em";
+descContainer.style.color = "#1a4a1a";
+descContainer.style.padding = "10px";
+descContainer.style.background = "rgba(255, 255, 255, 0.8)";
+descContainer.style.borderRadius = "15px";
+descContainer.style.marginTop = "10px";
+descContainer.innerHTML = "<p>...</p>";
+
+container.appendChild(title);
 availableUpgrades.forEach((upgrade) => {
   const button = document.createElement("button");
   button.id = `upgrade-${upgrade.name.toLowerCase().replace(/\s+/g, "-")}`;
@@ -136,6 +153,7 @@ availableUpgrades.forEach((upgrade) => {
     <span id="${button.id}-count">Owned: ${upgrade.count}</span>
   `;
   container.appendChild(button);
+  container.appendChild(descContainer);
 
   // Add button event listeners
   button.addEventListener("click", () => {
@@ -159,12 +177,15 @@ availableUpgrades.forEach((upgrade) => {
 
   // Add hover description
   button.addEventListener("mouseenter", () => {
-    descElement.innerHTML = upgrade.desc;
+    descContainer.innerHTML = upgrade.desc;
   });
   button.addEventListener("mouseleave", () => {
-    descElement.innerHTML = "...";
+    descContainer.innerHTML = "...";
   });
 });
+
+// Automatically scroll to the top of the upgrades
+container.scrollTop = container.scrollHeight;
 
 // Enable or disable upgrade buttons based on croaks amount
 function disableButtonCheck() {
