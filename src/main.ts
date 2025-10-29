@@ -16,6 +16,8 @@ import frogspawnImg from "./img/frogspawn.png";
 import kingfrogImg from "./img/kingfrog.png";
 import tadpoleImg from "./img/tadpole.png";
 
+import heartImg from "./img/heart.png";
+
 import mainButtonImg from "./img/mainfrog.png";
 import "./style.css";
 
@@ -184,6 +186,12 @@ availableUpgrades.forEach((upgrade) => {
       const countSpan = button.querySelector("span[id$='-count']")!;
       countSpan.textContent = `Owned: ${upgrade.count}`;
 
+      // Play click effects
+      button.classList.add("clicked");
+      setTimeout(() => {
+        button.classList.remove("clicked");
+      }, 120);
+
       upgradeSoundInstance.play();
     }
   });
@@ -198,7 +206,7 @@ availableUpgrades.forEach((upgrade) => {
 });
 
 // Automatically scroll to the top of the upgrades
-container.scrollTop = container.scrollHeight;
+container.scrollTop = 0;
 
 // Enable or disable upgrade buttons based on croaks amount
 function disableButtonCheck() {
@@ -225,6 +233,29 @@ function incrementCroaks(value: number) {
 //  EVENT LISTENERS
 // ====================================
 mainButton.addEventListener("click", () => {
+  // Play click effect
+  mainButton.classList.add("clicked");
+  setTimeout(() => {
+    mainButton.classList.remove("clicked");
+  }, 120);
+
+  // Spawn a heart above the frog
+  const heart = document.createElement("img");
+  heart.src = heartImg;
+  heart.className = "floating-heart";
+
+  const rect = mainButton.getBoundingClientRect();
+  heart.style.left = Math.random() * (rect.right - rect.left) +
+    (rect.left - 25) +
+    "px";
+  heart.style.top = rect.top + "px";
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 1000);
+
+  // Play sound and increment croaks
   frogSoundInstance.play();
   incrementCroaks(clickValue);
 });
