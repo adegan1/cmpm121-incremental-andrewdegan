@@ -1,7 +1,12 @@
+// ====================================
+//  GAME STATE & UPGRADE DATA
+// ====================================
 const MAX_FPS = 60;
 const FRAME_INTERVAL = 1000 / MAX_FPS; // Approximately 16.67ms per frame
 
-// Import assets
+// ====================================
+//  ASSET SETUP
+// ====================================
 import frogSound from "./audio/frogsfx.wav";
 import upgradeSound from "./audio/upgradesfx.wav";
 
@@ -14,7 +19,9 @@ import upgrade3Img from "./img/tadpole.png";
 import mainButtonImg from "./img/mainfrog.png";
 import "./style.css";
 
-// Initialize upgrade
+// ====================================
+//  UPGRADE DATA
+// ====================================
 interface Upgrade {
   name: string;
   cost: number;
@@ -71,7 +78,9 @@ frogSoundInstance.volume = 0.3;
 const upgradeSoundInstance = new Audio(upgradeSound);
 upgradeSoundInstance.volume = 0.25;
 
-// Create basic HTML structure
+// ====================================
+//  HTML STRUCTURE
+// ====================================
 document.body.innerHTML = `
   <div class="titlecontainer">
   <div class = "title"><h1>Frog Frenzy</h1></div>
@@ -126,18 +135,24 @@ document.body.innerHTML = `
   </div>
 `;
 
-// Get HTML elements
+// ====================================
+//  DOM ELEMENTS
+// ====================================
 const mainButton = document.getElementById("mainbutton")!;
 const autoClickValueElement = document.getElementById("autoclickvalue")!;
 const counterElement = document.getElementById("counter")!;
 const descElement = document.getElementById("descElement")!;
 
-// Function to increment bank
+// ====================================
+//  GAME LOGIC
+// ====================================
 function incrementBank(value: number) {
   bank += value;
 }
 
-// When the player clicks the main button
+// ====================================
+//  EVENT LISTENERS
+// ====================================
 mainButton.addEventListener("click", () => {
   frogSoundInstance.play();
   incrementBank(clickValue);
@@ -148,7 +163,9 @@ setInterval(() => {
   incrementBank(autoClickValue);
 }, 1000);
 
-// Upgrade button logic
+// ====================================
+//  UPGRADE BUTTONS
+// ====================================
 availableUpgrades.forEach((upgrade, index) => {
   const button = document.getElementById(`upgrade${index + 1}`)!;
   const info = document.getElementById(`upgrade${index + 1}Info`)!;
@@ -166,7 +183,9 @@ availableUpgrades.forEach((upgrade, index) => {
   });
 });
 
-// Show description on hover
+// ====================================
+//  HOVER DESCRIPTIONS
+// ====================================
 availableUpgrades.forEach((upgrade, index) => {
   const button = document.getElementById(`upgrade${index + 1}`)!;
 
@@ -194,6 +213,9 @@ function disableButtonCheck() {
 // Update the counter display every frame (max 60fps)
 let previousTime = 0;
 
+// ====================================
+//  RENDER LOOP
+// ====================================
 function update() {
   // Calculate time since last frame
   const deltaTime = performance.now() - previousTime;
@@ -225,6 +247,7 @@ function update() {
   requestAnimationFrame(update);
 }
 
+// Initial update call
 update();
 
 // Make sure there is a blank line at the end of the file for committing
