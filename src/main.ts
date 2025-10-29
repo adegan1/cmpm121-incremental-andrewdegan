@@ -91,21 +91,24 @@ upgradeSoundInstance.volume = 0.25;
 //  HTML STRUCTURE
 // ====================================
 document.body.innerHTML = `
-  <div class="titlecontainer">
-  <div class = "title"><h1>Frog Frenzy</h1></div>
-  <div class = "subtitle"><h3>Click the frog to earn Croaks!</h3></div>
+  <div class="main">
+    <div class="titlecontainer">
+    <div class = "title"><h1>Frog Frenzy</h1></div>
+    <div class = "subtitle"><h3>Click the Frog to earn Croaks!</h3></div>
+    </div>
+
+    <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
+
+    <div class="countcontainer">
+    <div class = "counter"><p><span id="croaksPerSecond">${croaksPerSecond}</span> Croaks per Second</p></div>
+    <div class = "subtitle"><h2>Croaks: <span id="counter">${croaks}</span></h2></div>
+    </div>
   </div>
-  <div class="countcontainer">
-  <div class = "counter"><p><span id="croaksPerSecond">${croaksPerSecond}</span> Croaks per Second</p></div>
-  <div class = "subtitle"><h2>Croaks: <span id="counter">${croaks}</span></h2></div>
-  </div>
 
-  <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
-
-  <div class="upgradecontainer" id="upgrade-container"></div>
-
-  <div class="descriptioncontainer">
-    <div class="counter"><span id="descElement"><p>...</p></span></div>
+  <div class="upgrades" id="upgrade-container">
+    <div class="descriptioncontainer">
+      <div class="counter"><span id="descElement"><p>...</p></span></div>
+    </div>
   </div>
 `;
 
