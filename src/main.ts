@@ -10,11 +10,11 @@ const FRAME_INTERVAL = 1000 / MAX_FPS; // Approximately 16.67ms per frame
 import frogSound from "./audio/frogsfx.wav";
 import upgradeSound from "./audio/upgradesfx.wav";
 
-import upgrade2Img from "./img/embryo.png";
-import upgrade4Img from "./img/froglet.png";
-import upgrade1Img from "./img/frogspawn.png";
-import upgrade5Img from "./img/kingfrog.png";
-import upgrade3Img from "./img/tadpole.png";
+import embryoImg from "./img/embryo.png";
+import frogletImg from "./img/froglet.png";
+import frogspawnImg from "./img/frogspawn.png";
+import kingfrogImg from "./img/kingfrog.png";
+import tadpoleImg from "./img/tadpole.png";
 
 import mainButtonImg from "./img/mainfrog.png";
 import "./style.css";
@@ -93,42 +93,7 @@ document.body.innerHTML = `
 
   <button id="mainbutton" class = "mainbutton"><img src="${mainButtonImg}" class="mainicon" /></button><br>
 
-  <div class="upgradecontainer">
-  <button id="upgrade1" class = "upgradebutton">Frogspawn<br><img src="${upgrade1Img}" class="upgradeicon" /><br>
-    <span id="upgrade1Info">(Cost: ${availableUpgrades[0].cost})<br>
-    (+ ${availableUpgrades[0].rate} CpS)</span><br><br>
-    <span id="upgradeCount1">Owned: ${
-  availableUpgrades[0].count
-}</span></button>
-
-  <button id="upgrade2" class = "upgradebutton">Embryo<br><img src="${upgrade2Img}" class="upgradeicon" /><br>
-    <span id="upgrade2Info">(Cost: ${availableUpgrades[1].cost})<br>
-    (+ ${availableUpgrades[1].rate} CpS)</span><br><br>
-    <span id="upgradeCount2">Owned: ${
-  availableUpgrades[1].count
-}</span></button>
-
-  <button id="upgrade3" class = "upgradebutton">Tadpole<br><img src="${upgrade3Img}" class="upgradeicon" /><br>
-    <span id="upgrade3Info">(Cost: ${availableUpgrades[2].cost})<br>
-    (+ ${availableUpgrades[2].rate} CpS)</span><br><br>
-    <span id="upgradeCount3">Owned: ${
-  availableUpgrades[2].count
-}</span></button>
-
-  <button id="upgrade4" class = "upgradebutton">Froglet<br><img src="${upgrade4Img}" class="upgradeicon" /><br>
-    <span id="upgrade4Info">(Cost: ${availableUpgrades[3].cost})<br>
-    (+ ${availableUpgrades[3].rate} CpS)</span><br><br>
-    <span id="upgradeCount4">Owned: ${
-  availableUpgrades[3].count
-}</span></button>
-
-  <button id="upgrade5" class = "upgradebutton">King Frog<br><img src="${upgrade5Img}" class="upgradeicon" /><br>
-      <span id="upgrade5Info">(Cost: ${availableUpgrades[4].cost})<br>
-      (+ ${availableUpgrades[4].rate} CpS)</span><br><br>
-      <span id="upgradeCount5">Owned: ${
-  availableUpgrades[4].count
-}</span></button>
-  </div>
+  <div class="upgradecontainer" id="upgrade-container"></div>
 
   <div class="descriptioncontainer">
     <div class="counter"><span id="descElement"><p>...</p></span></div>
@@ -142,6 +107,82 @@ const mainButton = document.getElementById("mainbutton")!;
 const autoClickValueElement = document.getElementById("autoclickvalue")!;
 const counterElement = document.getElementById("counter")!;
 const descElement = document.getElementById("descElement")!;
+
+// ====================================
+//  UPGRADE BUTTONS
+// ====================================
+const container = document.getElementById("upgrade-container")!;
+
+availableUpgrades.forEach((upgrade) => {
+  const button = document.createElement("button");
+  button.id = `upgrade-${upgrade.name.toLowerCase().replace(/\s+/g, "-")}`;
+  button.className = "upgradebutton";
+  button.innerHTML = `
+    ${upgrade.name}<br>
+    <img src="${getUpgradeImage(upgrade.name)}" class="upgradeicon" /><br>
+    <span id="${button.id}-info">(Cost: ${upgrade.cost})<br>(+${upgrade.rate} CpS)</span><br><br>
+    <span id="${button.id}-count">Owned: ${upgrade.count}</span>
+  `;
+  container.appendChild(button);
+
+  // Add button event listeners
+  button.addEventListener("click", () => {
+    if (bank >= upgrade.cost) {
+      bank -= upgrade.cost;
+      autoClickValue += upgrade.rate;
+      upgrade.count++;
+      upgrade.cost = +(upgrade.cost * 1.15).toFixed(1); // Increase cost by 15%
+
+      // Update its own info span
+      const infoSpan = button.querySelector("span[id$='-info']")!;
+      infoSpan.innerHTML = `(Cost: ${upgrade.cost})<br>(+${upgrade.rate} CpS)`;
+
+      // Update its own count span
+      const countSpan = button.querySelector("span[id$='-count']")!;
+      countSpan.textContent = `Owned: ${upgrade.count}`;
+
+      upgradeSoundInstance.play();
+    }
+  });
+
+  // Add hover description
+  button.addEventListener("mouseenter", () => {
+    descElement.innerHTML = upgrade.desc;
+  });
+  button.addEventListener("mouseleave", () => {
+    descElement.innerHTML = "...";
+  });
+});
+
+function getUpgradeImage(name: string): string {
+  switch (name) {
+    case "Frogspawn":
+      return frogspawnImg;
+    case "Embryo":
+      return embryoImg;
+    case "Tadpole":
+      return tadpoleImg;
+    case "Froglet":
+      return frogletImg;
+    case "King Frog":
+      return kingfrogImg;
+  }
+  return "";
+}
+
+// Enable or disable upgrade buttons based on bank amount
+function disableButtonCheck() {
+  availableUpgrades.forEach((upgrade) => {
+    const button = document.getElementById(
+      `upgrade-${upgrade.name.toLowerCase().replace(/\s+/g, "-")}`,
+    )!;
+    if (bank >= upgrade.cost) {
+      button.removeAttribute("disabled");
+    } else {
+      button.setAttribute("disabled", "true");
+    }
+  });
+}
 
 // ====================================
 //  GAME LOGIC
@@ -164,58 +205,11 @@ setInterval(() => {
 }, 1000);
 
 // ====================================
-//  UPGRADE BUTTONS
+//  RENDER LOOP
 // ====================================
-availableUpgrades.forEach((upgrade, index) => {
-  const button = document.getElementById(`upgrade${index + 1}`)!;
-  const info = document.getElementById(`upgrade${index + 1}Info`)!;
-  const countElement = document.getElementById(`upgradeCount${index + 1}`)!;
-
-  button.addEventListener("click", () => {
-    if (bank >= upgrade.cost) {
-      bank -= upgrade.cost;
-      autoClickValue += upgrade.rate;
-      countElement.innerText = `Owned: ${++upgrade.count}`;
-      upgrade.cost = +(upgrade.cost * 1.15).toFixed(1); // Increase cost by 15%
-      upgradeSoundInstance.play();
-      info.innerText = `(Cost: ${upgrade.cost})\n(+ ${upgrade.rate} CpS)`;
-    }
-  });
-});
-
-// ====================================
-//  HOVER DESCRIPTIONS
-// ====================================
-availableUpgrades.forEach((upgrade, index) => {
-  const button = document.getElementById(`upgrade${index + 1}`)!;
-
-  button.addEventListener("mouseenter", () => {
-    descElement.innerText = upgrade.desc;
-  });
-
-  button.addEventListener("mouseleave", () => {
-    descElement.innerText = "...";
-  });
-});
-
-// Enable or disable upgrade buttons based on bank amount
-function disableButtonCheck() {
-  availableUpgrades.forEach((upgrade, index) => {
-    const button = document.getElementById(`upgrade${index + 1}`)!;
-    if (bank >= upgrade.cost) {
-      button.removeAttribute("disabled");
-    } else {
-      button.setAttribute("disabled", "true");
-    }
-  });
-}
-
 // Update the counter display every frame (max 60fps)
 let previousTime = 0;
 
-// ====================================
-//  RENDER LOOP
-// ====================================
 function update() {
   // Calculate time since last frame
   const deltaTime = performance.now() - previousTime;
@@ -237,11 +231,6 @@ function update() {
 
   autoClickValueElement.innerText = autoClickValue.toString();
   counterElement.innerText = bank.toString();
-
-  availableUpgrades.forEach((upgrade, index) => {
-    const countElement = document.getElementById(`upgradeCount${index + 1}`)!;
-    countElement.innerText = `Owned: ${upgrade.count}`;
-  });
 
   // Request the next frame
   requestAnimationFrame(update);
