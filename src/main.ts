@@ -272,6 +272,75 @@ function update() {
   requestAnimationFrame(update);
 }
 
+// ====================================
+//  LOCAL SAVE / LOAD SYSTEM
+// ====================================
+const SAVE_KEY = "frogfrenzy-save-v1";
+
+interface SaveData {
+  croaks: number;
+  croaksPerSecond: number;
+  upgrades: { count: number; cost: number }[];
+}
+
+// Save the current game state
+function saveGame() {
+  const saveData: SaveData = {
+    croaks,
+    croaksPerSecond,
+    upgrades: availableUpgrades.map((u) => ({
+      count: u.count,
+      cost: u.cost,
+    })),
+  };
+
+  localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+}
+
+// Load save into memory (if exists)
+function loadGame() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+
+  try {
+    const data: SaveData = JSON.parse(raw);
+
+    croaks = data.croaks ?? 0;
+    croaksPerSecond = data.croaksPerSecond ?? 0;
+
+    data.upgrades?.forEach((saved, i) => {
+      if (!availableUpgrades[i]) return;
+      availableUpgrades[i].count = saved.count ?? 0;
+      availableUpgrades[i].cost = saved.cost ?? availableUpgrades[i].cost;
+
+      // Update UI text for counts + costs
+      const id = `upgrade-${
+        availableUpgrades[i].name.toLowerCase().replace(/\s+/g, "-")
+      }`;
+      const button = document.getElementById(id);
+      if (button) {
+        const info = button.querySelector("span[id$='-info']");
+        const count = button.querySelector("span[id$='-count']");
+
+        if (info) {
+          info.innerHTML = `(Cost: ${availableUpgrades[i].cost})<br>(+${
+            availableUpgrades[i].rate
+          } CpS)`;
+        }
+        if (count) count.textContent = `Owned: ${availableUpgrades[i].count}`;
+      }
+    });
+  } catch (e) {
+    console.warn("Failed to load save:", e);
+  }
+}
+
+setInterval(saveGame, 5000);
+addEventListener("beforeunload", saveGame);
+
+// Load saved game state
+loadGame();
+
 // Initial update call
 update();
 
