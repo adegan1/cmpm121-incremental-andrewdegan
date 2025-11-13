@@ -126,35 +126,9 @@ const container = document.getElementById("upgrade-container")!;
 const title = document.createElement("div");
 title.id = "upgrades-title";
 title.textContent = "Upgrades";
-title.style.textAlign = "center";
-title.style.fontWeight = "bold";
-title.style.fontSize = "1.2em";
-title.style.margin = "10px 0";
-title.style.color = "#2d6d2d";
-title.style.position = "absolute";
-title.style.top = "0";
-title.style.left = "0";
-title.style.width = "100%";
-title.style.textAlign = "center";
-title.style.fontWeight = "bold";
-title.style.fontSize = "1.3em";
-title.style.color = "#1a4a1a";
-title.style.backgroundColor = "rgba(142, 204, 142, 0.9)";
-title.style.padding = "10px 0";
-title.style.margin = "0";
-title.style.borderBottom = "6px solid rgba(42, 105, 42, 0.6)";
-title.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
 
 const descContainer = document.createElement("div");
 descContainer.id = "desc-container";
-descContainer.style.textAlign = "center";
-descContainer.style.fontSize = "0.9em";
-descContainer.style.color = "#1a4a1a";
-descContainer.style.padding = "10px";
-descContainer.style.background = "rgba(255, 255, 255, 0.8)";
-descContainer.style.borderRadius = "15px";
-descContainer.style.marginTop = "10px";
-descContainer.innerHTML = "<p>...</p>";
 
 container.appendChild(title);
 availableUpgrades.forEach((upgrade) => {
@@ -245,10 +219,11 @@ mainButton.addEventListener("click", () => {
   heart.className = "floating-heart";
 
   const rect = mainButton.getBoundingClientRect();
-  heart.style.left = Math.random() * (rect.right - rect.left) +
-    (rect.left - 25) +
-    "px";
-  heart.style.top = rect.top + "px";
+  const heartX = rect.left + rect.width * (0.2 + Math.random() * 0.6);
+  const heartY = rect.top + rect.height * 0.1;
+
+  heart.style.left = heartX + "px";
+  heart.style.top = heartY + "px";
   document.body.appendChild(heart);
 
   setTimeout(() => {
